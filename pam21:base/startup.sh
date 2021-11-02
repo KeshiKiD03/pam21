@@ -1,4 +1,4 @@
-wq#! /bin/bash
+#! /bin/bash
 
 useradd -m -s /bin/bash unix01 # -m crea directorio y -s shell
 useradd -m -s /bin/bash unix02
