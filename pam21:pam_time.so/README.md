@@ -11,7 +11,7 @@ ASIX M06-ASO Escola del treball de barcelona
 
 ### Imatges:
 
-* **edtasixm06/pam21:base** : Host pam per practicar *PAM* amb chfn i system-auth. Es tracten els types
+* **edtasixm06/pam21:pam_time.so** : Host pam per practicar *PAM* amb chfn i system-auth. Es tracten els types
   auth i session amb chfn practicant el significat de optional, sufficient, required i requisite i el 
   mòdul pam_unix.so. El type password amb *pwquality*. El type account amb *pam_time.so*. 
   El type sessions amb *pam_mkhomedir.so* i *pam_mount.so*. Es practica *pam_mount.so* amb un muntatge tmpfs
@@ -20,9 +20,6 @@ ASIX M06-ASO Escola del treball de barcelona
   Atenció, cal usar en el container --privileged per poder fer els muntatges nfs.
 
   ```
-  $ docker run --rm --name pam.edt.org --hostname pam.edt.org --net hisx2 --privileged -it keshikid03/pam21:base
+  $ docker run --rm --name pam.edt.org --hostname pam.edt.org --net hisx2 --privileged -it keshikid03/pam21:pam_time.so
   ```
-  
-  * **edtasixm06/pam21:pam_time.so** :
-  
-  * **edtasixm06/pam21:pam_mount.so** :
+

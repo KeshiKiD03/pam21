@@ -26,51 +26,51 @@ docker run --rm --name pam.edt.org -h pam.edt.org --net 2hisx --privileged -it k
   
 # PAM
 
--->La seguretat de las aplicacions s'evita mitjançant pam que funciona de forma modular(es poden posra o no posar els moduls)
+--> La seguretat de las aplicacions s'evita mitjançant pam que funciona de forma modular(es poden posra o no posar els moduls)
 
--->Has de configurar els programes perque utilitzin el pam
+--> Has de configurar els programes perque utilitzin el pam
  
 ```
-docker run --rm --name pam.edt.org -h pam.edt.org --network 2hisix -it albert241001/pam21:base /bin/bash
+docker run --rm --name pam.edt.org -h pam.edt.org --network 2hisix -it keshikid03/pam21:base /bin/bash
 ```
 
-*# The PAM configuration file for the Shadow `chfn' service*
+## The PAM configuration file for the Shadow `chfn' service
 **-auth    required        pam_unix.so**
 **-account sufficient      pam_permit.so**
 
-*authentification*
+##authentification
 
 **authentication es demostrar que si eres pere seas pere(por ejemplo sabiendo sus credenciales/otras opciones)**
 
 **authoritzation (no es en pam(se parece a auth)) es una vez sabemos que eres pere si tenemos los permisos para hacer lo que queramos)**
 
-*account*
+##account
 
 **comprova si esta caducada la compte//si esta fora horari**
 
-*password*
+##password
 
 **regles que tenen que veure a com establir/modificar la password/metode d'autetificació**
 
-*session*
+##session
 
 **cosas a hacer antes de iniciar o cerrar la session de usuario**
 
-*control:*
+##control:*
 
-*optional*
+##optional*
 
 **si va be o va malament no te importancia a menys que sigui el unic modul del stack**
 
-*sufficient*
+##sufficient*
 
 **si accepta continua ja que va be a menys que h hagi un required abans//si fracasa se ignora y continua con la siguiente autentificacion**
 
-*required*
+##required*
 
 **si falla donara finalment fallo**
 
-*requisite*
+##requisite*
 
 **si falla donara fala esta relacionat amb el primer required/requisite**
 
@@ -82,31 +82,91 @@ para iniciar con usuarios ldap primero entrar con un usuario local
 
 --> instalar pam ldap y nss y mirar que se confgura al hacer interactivamente
 
-1-->
+## EJERCICIO 8 PAM_MOUNT.SO
+
+1.A tots els usuaris es munta dins el seu home un recurs anomenat tmp de 100M
+corresponent a un ramdisk tmpfs.
 ```
-<volume fstype="tmpfs" mountpoint="/home/%(USER)/tmp" options="size=100M,uid=%(USER),mode=0700" />
+<volume user="test" 
+	fstype="tmpfs" 
+	mountpoint="/home/%(USER)/tmp"
+	options="size=100M,uid=%(USER),mode=0700" />
 ```
-2-->
-```
-<volume user="unix01" fstype="tmpfs" mountpoint="/home/%(USER)/tmp" options="size=200M,uid=%(USER),mode=0700" />
-```
-3-->
-```
-<volume user="unix02" fstype="nfs" server="172.18.0.1" path="/mnt/nfs_share" mountpoint="/home/%(USER)/tmp" />
-```
+2. Només a l’usuari unix01 es munta dins el seu home un recurs anomenat tmp de
+200M corresponent a un ramdisk tmpfs.
 
 ```
- sudo apt update
- sudo apt install nfs-kernel-server
- sudo mkdir -p /mnt/nfs_share
- sudo chown -R nobody:nogroup /mnt/nfs_share/
- sudo chmod 777 /mnt/nfs_share/
- sudo vim /etc/exports
- sudo exportfs -a
- sudo systemctl restart nfs-kernel-server
- sudo ufw allow from 172.18.0.0/16 to any port nfs
- sudo ufw enable
- sudo ufw status
- sudo nano /etc/exports
-	/mnt/nfs_share  172.18.0.0/16(rw,sync,no_subtree_check)
+<volume user="test" 
+	fstype="tmpfs" 
+	mountpoint="/home/%(USER)/tmp"
+	options="size=100M,uid=%(USER),mode=0700" />
+
 ```
+3. A l’usuari unix02 se li munta dins el home un recurs NFS de xarxa.
+*Nota* Creeu un recurs de xarxa NFS per exemple /usr/share/docs exportat per
+NFS.
+```
+<volume user="unix02" 
+	fstype="nfs" 
+	server="172.18.0.1" 
+	path="/mnt/nfs_share" 
+	mountpoint="/home/%(USER)/tmp" />
+```
+
+4. En el HOST (Instalar NFS-KERNEL-SERVER)
+```
+sudo apt-get update
+```
+```
+sudo apt-get install nfs-kernel-server
+```
+```
+sudo mkdir -p /mnt/nfs_share
+```
+```
+sudo chown -R nobody:nogroup /mnt/nfs_share
+```
+```
+sudo chmod 777 /mnt/nfs_share/
+```
+```
+sudo vim /etc/exports
+```
+```
+/mnt/nfs_share 172.19.0.0/16(rw,sync,no_subtree_check) # Añadir esta línea
+```
+```
+sudo exportfs -a
+```
+```
+sudo systemctl restart nfs-kernel-server
+```
+```
+sudo ufw allow from 172.19.0.0/16 to any port nfs
+```
+Rules updated
+```
+sudo ufw enable
+```
+Firewall is active and enabled on system startup
+
+```
+sudo ufw status
+```
+Status: active
+
+To                         Action      From
+--                         ------      ----
+2049                       ALLOW       172.19.0.0/16   
+
+5. COMPROBACIÓN EN LA MÁQUINA VIRTUAL (INSTALAR NFS-COMMON DEJARLO EN EL DOCKERFILE)
+```
+su - unix01 o unix02
+```
+```
+mount | grep tmpfs
+```
+```
+mount | grep nfs
+```
+[NFS]

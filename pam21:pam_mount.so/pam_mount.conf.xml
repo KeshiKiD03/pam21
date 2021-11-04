@@ -21,7 +21,7 @@
 -->
 
 <volume user="unix02" 
-	fstype="nfs" 
+	fstype="nfs4" 
 	server="172.18.0.1" 
 	path="/mnt/nfs_share" 
 	mountpoint="/home/%(USER)/tmp" />

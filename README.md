@@ -20,9 +20,9 @@ ASIX M06-ASO Escola del treball de barcelona
   Atenció, cal usar en el container --privileged per poder fer els muntatges nfs.
 
   ```
-  $ docker run --rm --name pam.edt.org --hostname pam.edt.org --net hisx2 --privileged -it keshikid03/pam21:base
+  docker run --rm --name pam.edt.org --hostname pam.edt.org --net hisx2 --privileged -it keshikid03/pam21:base
   ```
   
-  * **edtasixm06/pam21:pam_time.so** :
+  * **edtasixm06/pam21:pam_time.so** : Host PAM per practica *PAM* amb chfn, amb la pràctica de d'inici de sessió d'usuaris per fer chfn.
   
-  * **edtasixm06/pam21:pam_mount.so** :
+  * **edtasixm06/pam21:pam_mount.so** : Host PAM per practica muntatge temporal del Home, també muntatge tmpfs i un de nfs4.
