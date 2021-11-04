@@ -10,6 +10,7 @@ echo -e "unix02\nunix02" | passwd unix02
 echo -e "unix03\nunix03" | passwd unix03
 # Posa la contrasenya # sense --stdin por debian echo -e por el control
 
+# Copiar arxius necesaris
 cp /opt/docker/login.defs /etc/login.defs
 
 /bin/bash
