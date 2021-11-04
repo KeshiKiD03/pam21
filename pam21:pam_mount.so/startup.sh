@@ -11,5 +11,6 @@ echo -e "unix03\nunix03" | passwd unix03
 # Posa la contrasenya # sense --stdin por debian echo -e por el control
 
 cp /opt/docker/login.defs /etc/login.defs
+cp /opt/docker/pam_mount.conf.xml /etc/security/pam_mount.conf.xml
 
 /bin/bash

@@ -20,7 +20,8 @@ ASIX M06-ASO Escola del treball de barcelona
   Atenció, cal usar en el container --privileged per poder fer els muntatges nfs.
 
   ```
-  $ docker run --rm --name pam.edt.org --hostname pam.edt.org --net hisx2 --privileged -it keshikid03/pam21:base
+docker run --rm --name pam.edt.org -h pam.edt.org --net 2hisx --privileged -it keshikid03/pam21:pam_mount.so
+
   ```
   
 # PAM
@@ -91,7 +92,7 @@ para iniciar con usuarios ldap primero entrar con un usuario local
 ```
 3-->
 ```
-<volume user="unix02" fstype="nfs" server="172.18.0.1" path="/mnt/nfs_share" mountpoint="/home/%(USER)/t>
+<volume user="unix02" fstype="nfs" server="172.18.0.1" path="/mnt/nfs_share" mountpoint="/home/%(USER)/tmp" />
 ```
 
 ```
