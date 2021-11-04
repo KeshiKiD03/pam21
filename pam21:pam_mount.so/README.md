@@ -82,7 +82,7 @@ para iniciar con usuarios ldap primero entrar con un usuario local
 
 --> instalar pam ldap y nss y mirar que se confgura al hacer interactivamente
 
-## EJERCICIO 8 PAM_MOUNT.SO
+## EJERCICIO 8 PAM MOUNT.SO
 
 1.A tots els usuaris es munta dins el seu home un recurs anomenat tmp de 100M
 corresponent a un ramdisk tmpfs.
@@ -117,42 +117,55 @@ NFS.
 ```
 sudo apt-get update
 ```
+
 ```
 sudo apt-get install nfs-kernel-server
 ```
+
 ```
 sudo mkdir -p /mnt/nfs_share
 ```
+
 ```
 sudo chown -R nobody:nogroup /mnt/nfs_share
 ```
+
 ```
 sudo chmod 777 /mnt/nfs_share/
 ```
+
 ```
 sudo vim /etc/exports
 ```
+
 ```
 /mnt/nfs_share 172.19.0.0/16(rw,sync,no_subtree_check) # Añadir esta línea
 ```
+
 ```
 sudo exportfs -a
 ```
+
 ```
 sudo systemctl restart nfs-kernel-server
 ```
+
 ```
 sudo ufw allow from 172.19.0.0/16 to any port nfs
 ```
+
 Rules updated
+
 ```
 sudo ufw enable
 ```
+
 Firewall is active and enabled on system startup
 
 ```
 sudo ufw status
 ```
+
 Status: active
 
 To                         Action      From
@@ -169,4 +182,3 @@ mount | grep tmpfs
 ```
 mount | grep nfs
 ```
-[NFS]
