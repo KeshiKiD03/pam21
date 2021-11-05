@@ -11,7 +11,7 @@
   Atenció, cal usar en el container --privileged per poder fer els muntatges nfs.
 
 ```
-$ docker run --rm --name ldap.edt.org -h ldap.edt.org --net 2hisx -p 389:389 -d chriswar/ldap20:latest 
-$ docker run --rm --name pam.edt.org --hostname pam.edt.org --net 2hisx --privileged -it chriswar/pam20:ldap
+$ docker run --rm --name ldap.edt.org -h ldap.edt.org --net 2hisx -p 389:389 -d keshikid03/ldap21:latest 
+$ docker run --rm --name pam.edt.org --hostname pam.edt.org --net 2hisx --privileged -it keshikid03/pam21:ldap
 ```
 
