@@ -1,0 +1,6 @@
+auth [success=done default=1] pam_succeed_if.so uid eq 1002
+auth required  pam_deny.so
+auth optional	pam_echo.so [ club anti unix03 ]
+auth required pam_permit.so
+
+ 

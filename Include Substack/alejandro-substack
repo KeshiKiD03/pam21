@@ -1,0 +1,4 @@
+auth optional pam_echo.so [Substack]
+auth [success=ok default=die] pam_succeed_if.so uid = 1000 
+#auth required pam_deny.so
+#auth sufficient pam_permit.so

@@ -1,0 +1,4 @@
+# Aquest exemple es exclusiu per usuaris sense contrase√a
+auth include autorizado
+#auth substack autorizado
+auth optional  pam_echo.so [ sale esto ]
