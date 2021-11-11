@@ -19,10 +19,9 @@ ASIX M06-ASO Escola del treball de barcelona
 
   Atenció, cal usar en el container --privileged per poder fer els muntatges nfs.
 
-  ```
+```
 docker run --rm --name pam.edt.org -h pam.edt.org --net 2hisx --privileged -it keshikid03/pam21:pam_mount.so
-
-  ```
+```
   
 # PAM
 
@@ -34,7 +33,8 @@ docker run --rm --name pam.edt.org -h pam.edt.org --net 2hisx --privileged -it k
 docker run --rm --name pam.edt.org -h pam.edt.org --network 2hisix -it keshikid03/pam21:base /bin/bash
 ```
 
-## The PAM configuration file for the Shadow `chfn' service
+
+## The PAM configuration file for the Shadow 'chfn' service
 **-auth    required        pam_unix.so**
 **-account sufficient      pam_permit.so**
 
