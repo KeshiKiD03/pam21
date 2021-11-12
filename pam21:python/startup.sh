@@ -13,7 +13,9 @@ echo -e "unix03\nunix03\n" | passwd unix03
 # Copiar arxius necesaris
 cp /opt/docker/ldap.conf /etc/ldap/ldap.conf
 cp /opt/docker/login.defs /etc/login.defs
-cp /opt/docker/pam_mount.conf.xml /etc/security/pam_mount.conf.xml
+#cp /opt/docker/pam_mount.conf.xml /etc/security/pam_mount.conf.xml
+cp /opt/docker/chfn /etc/pam.d/chfn
+pip install python-pam
 
 # Interactiu
 /bin/bash

@@ -8,8 +8,9 @@ auth		sufficient	pam_rootok.so
 
 auth		optional	pam_echo.so [ auth ---------------- ]
 auth		sufficient	pam_python.so /opt/docker/pam_mates.py
+auth		required	pam_python.so /opt/docker/pam_deny.py
 
-account 	optional	pam_echo.so [ account ------------- ]
+account		optional	pam_echo.so [ account ------------- ]
 account		sufficient	pam_python.so /opt/docker/pam_permit.py
 
 password	include		pam_deny.so
