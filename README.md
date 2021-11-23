@@ -31,6 +31,8 @@ ASIX M06-ASO Escola del treball de barcelona
   unix (*pam_unix.so*) i autenticació LDAP (amb *pam_ldap.so*). Utilitza el paquet
   *nss-pam-ldapd*. Cal configurar: *ldap.conf*, *nslcd*, *nscd*, *nsswitch*.
   L'autentitació es configura al *system-auth*.
+  
+* **keshikid03/pam21:python** Creación de pam aware y creación de un módulo para PAM de una pregunta de matemáticas. Si acierta le dejará autenticarse.
 
 
   Atenció, cal usar en el container --privileged per poder fer els muntatges nfs.

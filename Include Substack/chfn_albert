@@ -1,0 +1,84 @@
+#
+# The PAM configuration file for the Shadow `chfn' service
+#
+
+# This allows root to change user infomation without being
+# prompted for a password
+#auth	optional	pam_echo.so [type:auth rhost: %H lhost: %h service: %s terminal: %t ruser: %U luser: %u]
+
+# EJEMPLO 1 USUARIO PUEDE MODIFICAR SIEMPRE SU CHFN SIN CONTRASENA
+
+#auth	sufficient	pam_permit.so
+
+#auth	required	pam_unix.so
+
+#account	optional	pam_echo.so [type:account rhost: %H lhost: %h service: %s terminal: %t ruser: %U luser: %u]
+
+# EJEMPLO 2 EL USUARIO NO PUEDE MODIFICAR NUNCA EL CHFN
+
+# auth	sufficient	pam_deny.so
+
+# EJEMPLO 3 SE PERMITE SI ES UN USUARIO UNIX VALIDO
+
+# auth	sufficient	pam_unix.so
+
+# EJEMPLO 4
+
+#auth	required	pam_permit.so # PERMITE ACCESO SIN CONTRASENA
+#auth	sufficient	pam_unix.so # PIDE CONTRASENA
+
+
+# EJEMPLO 5
+
+#auth sufficient pam_permit.so
+#auth required pam_unix.so # No se procesa
+
+# EJEMPLO 6
+# 
+# auth required pam_permit.so
+#auth required pam_unix.so # Pide password always y se asegura que sea usuario
+#unix
+#auth required pam_succeed_if.so debug uid > 1000
+#
+# EJEMPLO 7
+#
+#auth required pam_permit.so
+#auth sufficient pam_unix.so 
+# Pide password always y se asegura que sea usuario unix
+#auth required pam_succeed_if.so debug user = unix02
+#
+# EJEMPLO 8
+#
+# EJEMPLO 13
+#auth	sufficient	pam_deny.so
+#auth	sufficient	pam_unix.so
+
+
+#
+# SUBSTACK E INCLUDE
+#
+auth include common_include
+auth required pam_unix.so
+#auth substack common_substack
+auth optional pam_echo.so [ Hola ]
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+
+
+account sufficient	pam_permit.so
