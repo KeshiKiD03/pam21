@@ -18,7 +18,7 @@ cp /opt/docker/nslcd.conf /etc/nslcd.conf
 cp /opt/docker/pam_mount.conf.xml /etc/security/pam_mount.conf.xml
 cp /opt/docker/common-auth /etc/pam.d/common-auth
 cp /opt/docker/common-account /etc/pam.d/common-account
-cp /opt/docker/common-password /etc/pam.d/common-password
+#cp /opt/docker/common-password /etc/pam.d/common-password
 cp /opt/docker/common-session /etc/pam.d/common-session
 
 

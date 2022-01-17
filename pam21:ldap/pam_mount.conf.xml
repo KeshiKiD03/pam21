@@ -13,13 +13,24 @@
 <debug enable="0" />
     <!-- Volume definitions -->
     <!-- muntar ~/mytmp amb un ramdisk de 100M -->
+
+    <volume 
+       user="*"     
+       fstype="cifs" 
+       server="IP-SAMBA" 
+       path="%(USER)" 
+       mountpoint="~/%(USER)"
+    />
+
+
+<!--
     <volume
        user="*"
        fstype="tmpfs"
        mountpoint="~/%(GROUP)/%(USER)"
        options="size=100M" 
      />
-
+-->
     <!-- muntar a ~/man el recurs NFS 172.18.0.1:/usr/share/doc -->
 <!--     <volume 
          user="*"
