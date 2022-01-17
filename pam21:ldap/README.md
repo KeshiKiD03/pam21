@@ -1,4 +1,4 @@
-# LDAP Server
+# PAM Server
 ## Aaron Andal ASIX M06-ASO 2021-2022
 
 Imatges docker al DockerHub de [edtasixm06](https://hub.docker.com/u/edtasixm06/)
