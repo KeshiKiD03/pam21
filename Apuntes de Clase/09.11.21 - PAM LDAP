@@ -1,0 +1,310 @@
+09.11.21 - PAM LDAP
+
+NSS --> 
+
+apt-get update
+
+apt-get install ldap-utils
+
+Modificar el LDAP.conf
+
+------------
+
+Modificar el siguiente.
+
+A P = Authentication Provider --> (Password)
+				   ldap
+				   Kerberos
+				   
+I P = Information Provider --> (Info de l'usuari: uid, gid, shell...)
+				( passwd , ldap )
+				
+				getent
+				
+				files 
+				
+				ldap
+				
+Fichero /etc/nsswitch.conf
+Es el interruptor principal.
+
+NSSWITCH --> Interruptor.
+
+-----------
+
+libnss-ldap --> Es interactiva DEBIAN
+
+URI: LDAP server Uniform Resource Identifier: ldap://ldap.edt.org
+
+Distinguished name of the search base: dc=edt,dc=org
+
+--
+
+LDAP server Uniform Resource Identifier: ldap://ldap.edt.org
+
+Please enter the distinguished name of the LDAP search base.  Many sites use the components of their
+domain names for this purpose.  For example, the domain "example.net" would use "dc=example,dc=net" as
+the distinguished name of the search base.
+
+Distinguished name of the search base: dc=edt,dc=org
+
+Please enter which version of the LDAP protocol should be used by ldapns.  It is usually a good idea to
+set this to the highest available version number.
+
+  1. 3  2. 2
+LDAP version to use: 2
+
+Please choose which account will be used for nss requests with root privileges.
+
+Note: For this to work the account needs permission to access the attributes in the LDAP directory that
+are related to the users' shadow entries as well as users' and groups' passwords.
+
+--
+
+LDAP account for root: Manager
+
+secret
+
+-----------------
+
+Allow LDAP admin account to behave like local root? [yes/no] no 
+
+-----------------
+
+
+
+root@pam:/opt/docker# cat /etc/nsswitch.conf 
+# /etc/nsswitch.conf
+#
+# Example configuration of GNU Name Service Switch functionality.
+# If you have the `glibc-doc-reference' and `info' packages installed, try:
+# `info libc "Name Service Switch"' for information about this file.
+
+passwd:         files ldap
+group:          files ldap
+shadow:         files
+gshadow:        files
+
+hosts:          files dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+---------------------------------------------
+
+apt-get install libpam-ldapd
+
+URI: ldap://ldap.edt.org
+
+BASE: dC=edt,dc=org
+
+
+-------------
+
+dpkg -L [nombre paquete] libpam-ldapd
+
+-------------
+
+/etc/init.d/nscd restart
+/etc/init.d/nslcd restart
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------
+
+REPETICIÓN
+
+-----------------------------------------------
+
+root@pam:/opt/docker# apt-get install libnss-ldapd libpam-ldapd nslcd-utils ldap-utils
+
+For this package to work, you need to modify the /etc/nsswitch.conf file to use the ldap datasource.
+
+You can select the services that should have LDAP lookups enabled. The new LDAP lookups will be added as
+the last datasource. Be sure to review these changes.
+
+  1. passwd  3. shadow  5. networks  7. protocols  9. rpc        11. aliases
+  2. group   4. hosts   6. ethers    8. services   10. netgroup
+
+(Enter the items or ranges you want to select, separated by spaces.)
+
+Name services to configure: 1 2
+
+---
+
+/etc/nsswitch.conf --> Interruptor
+
+# /etc/nsswitch.conf
+#
+# Example configuration of GNU Name Service Switch functionality.
+# If you have the `glibc-doc-reference' and `info' packages installed, try:
+# `info libc "Name Service Switch"' for information about this file.
+
+passwd:         files ldap
+group:          files ldap
+shadow:         files
+gshadow:        files
+
+hosts:          files dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+
+/etc/nslcd.conf --> Interruptor
+
+root@pam:/etc# cat nslcd.conf    
+# /etc/nslcd.conf
+# nslcd configuration file. See nslcd.conf(5)
+# for details.
+
+# The user and group nslcd should run as.
+uid nslcd
+gid nslcd
+
+# The location at which the LDAP server(s) should be reachable.
+uri ldap://ldap.edt.org
+
+# The search base that will be used for all queries.
+base dc=edt,dc=org
+
+# The LDAP protocol version to use.
+#ldap_version 3
+
+# The DN to bind with for normal lookups.
+#binddn cn=annonymous,dc=example,dc=net
+#bindpw secret
+
+# The DN used for password modifications by root.
+#rootpwmoddn cn=admin,dc=example,dc=com
+
+
+/etc/nscd.conf --> Cache 
+
+--------------------------------------------------------
+
+getent --> Visualitza usuaris, grups, hosts de bases de dades.
+
+getent passwd --> Tots el usuaris locals i de ldap
+
+getent group --> Tots el grups locals i els grups de LDAP
+
+-------------------
+
+Password i root en un altre information provider = LDAP. 
+
+Validar la IP.
+
+1. Instal·lar
+2. Configurar
+3. Verificar conectividad con LDAP.
+
+Es poden tenir més 1 Provider al NSSWITCH.
+
+-------------------------
+
+Autenticació d'usuaris
+
+----
+
+El primer SU de ROOT no vale.
+
+----
+
+apt-get update
+
+apt-get install libpam-mkhomedir
+
+root@pam:/etc/pam.d# ls /lib/x86_64-linux-gnu/security/pam_
+pam_access.so      pam_ftp.so         pam_mail.so        pam_rootok.so      pam_tty_audit.so
+pam_cap.so         pam_group.so       pam_mkhomedir.so   pam_securetty.so   pam_umask.so
+pam_debug.so       pam_issue.so       pam_motd.so        pam_selinux.so     pam_unix.so
+pam_deny.so        pam_keyinit.so     pam_mount.so       pam_sepermit.so    pam_userdb.so
+pam_echo.so        pam_lastlog.so     pam_namespace.so   pam_setquota.so    pam_usertype.so
+pam_env.so         pam_ldap.so        pam_nologin.so     pam_shells.so      pam_warn.so
+pam_exec.so        pam_limits.so      pam_permit.so      pam_stress.so      pam_wheel.so
+pam_faildelay.so   pam_listfile.so    pam_pwhistory.so   pam_succeed_if.so  pam_xauth.so
+pam_faillock.so    pam_localuser.so   pam_pwquality.so   pam_time.so        
+pam_filter.so      pam_loginuid.so    pam_rhosts.so      pam_timestamp.so   
+root@pam:/etc/pam.d# ls /lib/x86_64-linux-gnu/security/pam_
+
+|| Donde están todos los ficheros instalados de PAM || 
+
+/etc/pam.d/common-session
+
+session optional	pam_mkhomedir.so
+
+-- /etc/security/
+
+vim pam_mount.conf.xml
+
+--
+
+su = Switch User
+
+
+
+------------------
+
+Autenticació d'usuaris
+
+TOCAR LOS 4 FICHEROS.. COMMON-SESSION PASSWORD AUTH ACCOUNT
+
+INSTALAR EL PAM MOUNT -- MKHOMEDIR
+
+
+------------------------
+
+PC15 - RAMON --> LDAP
+
+/home/usr/inf/hisx2/[PAM-MKHOMEDIR]/[PAM-MOUNT] --> SERVIDOR NFS
+
+-------------------------------
+
+CAMBIAR PASSWORD
+
+passwd --> passwd anna
+
+Cambiar password
+
+ldapwhoami -x -D 'uid=anna,ou=usuaris,dc=edt,dc=org' -W
+
+root@pam:/etc/security# ldapwhoami -x -D 'uid=anna,ou=usuaris,dc=edt,dc=org' -W
+Enter LDAP Password: 
+dn:uid=anna,ou=usuaris,dc=edt,dc=org
+root@pam:/etc/security# 
+
+ORDRE PASSWD --> Ha cambiado la contraseña también de LDAP.
+
+PASSWD --> Pregunta a pam_ldap.so. Para cambiar la contraseña.
+
+

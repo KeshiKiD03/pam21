@@ -1,0 +1,89 @@
+10.11.21 -
+
+Exemple regles PAM:
+#auth [default=1 success=ignore] pam_succeed_if.so debug uid = 1001
+#auth sufficient pam_permit.so
+#auth sufficient pam_deny.so
+
+Todos los usuarios vetados excepto el 1001. 
+
+SUCCESS = 1 --> SALTA DE LINEA
+
+DEFAULT = IGNORE [error]
+
+# SOLO EL USUARIO 1001 PUEDE INICIAR
+
+
+-------------
+
+auth [success=1 default=ignore] pam_succeed_if.so debug uid = 1001
+auth sufficient pam_permit.so
+auth sufficient pam_deny.so
+
+# DENIEGA
+
+
+------------------------------
+
+ok
+
+die
+
+reset = borrar la memoria
+
+SUCCESS =! DENY
+
+
+Each of the four keywords: required; requisite; sufficient; and optional, have an equivalent
+expression in terms of the [...] syntax. They are as follows:
+
+required
+[success=ok new_authtok_reqd=ok ignore=ignore default=bad]
+
+requisite
+[success=ok new_authtok_reqd=ok ignore=ignore default=die]
+
+sufficient
+[success=done new_authtok_reqd=done default=ignore]
+
+------------
+
+ROLES DEL PAM
+
+-----------------------------
+
+INCLUDE --> S'hi posaran les linies d'un fitxer.  Crida un altre fitxer  .pam
+
+pepi.pam
+
+------------------
+------------------
+------------------     ------
+include validar.pam -->  ----
+------------------     --die---
+                   
+Muere todo el STACK si ponemos un DIE. FALLA EL STACK ENTERO.
+                     
+-
+
+INCLUDE --> S'hi posaran les linies d'un fitxer.  Crida un altre fitxer  .pam
+
+pepi.pam
+
+------------------
+------------------
+------------------     ------
+include validar.pam -->  ----
+------------------     --die-
+                   
+Sigue todo el STACK si ponemos un DIE
+
+Retorna como si fuera 1 linea INCLUDE normal.
+
+Y sigue a la siguiente línea.
+
+Es como una FUNCIÓ.
+
+----------------------------------
+
+Construir el funcionament de include y substack.

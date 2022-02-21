@@ -1,0 +1,323 @@
+28.10.21 - PAM | LEERSE 17 PÁGINAS DE PAM
+---------------
+
+mkdir pam21
+
+cd pam21:base
+
+cd pam21\:base/
+
+isx36579183@i11:~/Documents/pam21/pam21:base$ cp ../../ldap21/ldap21\:schema/Dockerfile .
+
+isx36579183@i11:~/Documents/pam21/pam21:base$ cp ../../ldap21/ldap21\:schema/startup.sh .
+
+Modificar el Dockerfile
+
+  GNU nano 5.4                       Dockerfile                                 
+# ldapserver
+FROM debian:latest
+LABEL version="1.0"
+LABEL author="@edt ASIX-M06"
+LABEL subject="PAM host"
+RUN apt-get update
+#ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get -y install procps iproute2 tree nmap vim less finger passwd
+RUN mkdir /opt/docker
+COPY * /opt/docker/
+RUN chmod +x /opt/docker/startup.sh
+WORKDIR /opt/docker
+CMD /opt/docker/startup.sh
+
+Modificar el startup.sh
+
+#! /bin/bash
+
+useradd unix01
+useradd unix02
+useradd unix03
+echo -e "unix01\nunix01" | passwd --stdin unix01 # Posa la contrasenya
+echo -e "unix02\nunix02" | passwd --stdin unix02 # Posa la contrasenya
+echo -e "unix03\nunix03" | passwd --stdin unix03 # Posa la contrasenya
+
+cp /opt/docker/login.defs /etc/login.defs
+
+/bin/bash 
+
+
+----------------
+
+cp /etc/login.defs . # Conté configuracions generiques de creacions d'usuaris.
+
+---------------------
+
+NOTAS:
+
+Tener el software de PAM
+
+Ver si es un usuario, local de ldap o de unix.
+
+Usuaris locals de l'aplicació.
+
+Volum ampli es LDAP.
+
+Abans d'executar el programa, autenticar l'usuari de LDAP.
+
+Fer un programa Python del 1 al 10. Fer l'autenticació que toqui.
+
+
+
+PAM ES UN SISTEMA MODULAR. 
+
+SI CAMBIA LA LÍNEA POR PAM-UNIX O PAM-RETINA, PARA AUTENTICARSE DEBES HACERLO POR RETINA.
+
+Els programes que no tenen fitxer fan servir el del sistema.
+
+-----------------------------
+
+cat /etc/pam.d/common-auth --> Es el General. Si un programa necesita PAM per autenticar algo, y no tiene fichero propio usará el common.
+
+vim /etc/pam.d/sshd --> Son las reglas que explican como se aplica la seguridad en SSH.
+
+PAM --> No es un servicio. Está linkeado, si se modifica un fichero de configuración los cambios son inmediatos.
+
+Hay que verificar la regla. 
+
+La norma general, la sesión editando, tener una copia de seguridad. Una sesión de ROOT abierta por si acaso. 
+
+¡Los cambios tienen que estar bien!
+
+Si trabajamos con containers, no pasa nada.
+
+Pam es muy delicado, un cambio mal hecho te deja fuera del sistema.
+
+Fichero del PAM.
+
+
+finger --> user01
+
+
+------------------------------------------------
+
+
+1. Crear la imagen de Docker pertinente.
+
+2. Crear el GIT pertinente de PAM21:BASE
+
+tail /etc/passwd - Ver si tenemos los usuarios creados. Password no ha ido bien.
+
+3. Ejecutar Docker build -t del DOCKERFILE y Docker RUN de PAM.
+
+docker build -t keshikid03/pam21:base .
+
+docker run --rm --name pam.edt.org -h pam.edt.org --net 2hisx -it keshikid03/pam21:base /bin/bash
+
+4. Abrimos el startup.sh
+
+root@pam:/opt/docker# bash startup.sh 
+New password: Retype new password: passwd: password updated successfully
+New password: Retype new password: passwd: password updated successfully
+New password: Retype new password: passwd: password updated successfully
+root@pam:/opt/docker# 
+
+5. CHPASSWD USUARI:PASSWORD
+
+6. finger unix01 # En la imatge instalamos el Finger
+
+7. chfn user01
+
+root@pam:/opt/docker# chfn unix01
+Changing the user information for unix01
+Enter the new value, or press ENTER for the default
+	Full Name []: aa
+	Room Number []: aa
+	Work Phone []: aa
+	Home Phone []: aa
+	Other []: aa
+root@pam:/opt/docker# 
+
+8. Abrimos otra terminal y hacemos su -l
+
+docker exec -it pam.edt.org /bin/bash
+
+root@pam:/opt/docker# su -l unix01
+su: warning: cannot change directory to /home/unix01: No such file or directory
+$ 
+
+
+#! /bin/bash
+
+useradd -m -s /bin/bash unix01 # -m crea directorio y -s shell
+useradd -m -s unix02
+useradd -m -s unix03
+echo -e "unix01\nunix01" | passwd unix01 # Posa la contrasenya
+echo -e "unix02\nunix02" | passwd unix02 # Posa la contrasenya
+echo -e "unix03\nunix03" | passwd unix03 # Posa la contrasenya # sense --stdin por debian echo -e por el control
+
+cp /opt/docker/login.defs /etc/login.defs
+
+/bin/bash
+
+
+
+[VERIFICAR QUE VA AQUÍ]
+
+
+9. finger
+
+10. chfn
+
+root@pam:/opt/docker# su - unix01
+su: warning: cannot change directory to /home/unix01: No such file or directory
+$ id
+uid=1000(unix01) gid=1000(unix01) groups=1000(unix01)
+$ chfn
+
+11. cd /etc/pam.d --> Escriure les nostres regles de PAM dentro de DOCKER.
+
+12. Modificar chfnn
+
+#
+# The PAM configuration file for the Shadow `chfn' service
+#
+
+auth	optional	pam_echo.so [ hola radiola ]
+auth	sufficient	pam_permit.so
+account sufficient	pam_permit.so
+
+
+
+# The PAM configuration file for the Shadow `chfn&apos; service
+#
+
+auth	optional	pam_echo.so [ hola radiola ]
+auth	sufficient	pam_permit.so
+account	sufficient	pam_echo.so [ %h %s %t %u]
+account sufficient	pam_permit.so
+root@pam:/etc/pam.d# 
+
+
+
+
+
+
+
+# The PAM configuration file for the Shadow `chfn&apos; service
+#
+
+auth	optional	pam_echo.so [ hola radiola ]
+auth	sufficient	pam_deny.so
+account	sufficient	pam_echo.so [ %h %s %t %u]
+account sufficient	pam_permit.so
+root@pam:/etc/pam.d# 
+
+
+
+13. 
+
+#
+# The PAM configuration file for the Shadow `chfn' service
+#
+
+auth	optional	pam_echo.so [ hola radiola ]
+auth	sufficient	pam_deny.so
+account	optional	pam_echo.so [ %h %s %t %u]
+account sufficient	pam_deny.so
+root@pam:/etc/pam.d# 
+
+-------------------------------------------------------
+
+pam deny --> Denegar
+
+pam permit --> Sempre demana contrasenya
+
+pam unix --> ..
+
+
+-------------------------------------------------------------------------------
+
+
+auth (authentication) --> Autenticación, demostrar que en KESHI es en KESHI [Concepte general] and authorization.
+
+authz (authorization) --> Permisos 
+
+account 
+
+**comprova si esta caducada la compte//si esta fora d'horari
+
+password
+
+**Regles que tenen que veure com a establir/modificar la password/metode d'autenticacio
+
+**session
+
+**cosas a hacer antes de iniciar o cerrar la sesión del usuario
+
+-----------------------------------
+
+auth		sufficient	pam_permit.so
+auth		required	pam_unix.so
+account		suffiicient	pam_permit.so
+
+
+
+
+root@pam:/opt/docker# su -l unix01
+unix01@pam:~$ hostname
+pam.edt.org
+unix01@pam:~$ chfn
+chfn: PAM: Authentication failure
+unix01@pam:~$ 
+
+finger
+
+id
+
+
+
+
+
+
+auth            sufficient      pam_permit.so
+auth            required        pam_unix.so
+auth            required        pam_suceed_if.so user = unix03
+account         sufficient      pam_permit.so
+
+------------------------------------
+
+pam_unix.so try_first_pass --> Demana password unix la contrasenya que hi ha abans
+
+pam_mount.so demana password
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+EXEMPLE 19
+----------
+
+

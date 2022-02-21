@@ -1,0 +1,194 @@
+02.11.21 - PAM21:BASE
+
+TYPE:
+
+	AUTH --> QUIEN ES
+	ACCOUNT -->  EL TIPUS
+	PASSWORD --> MECANISMO DE AUTH
+	SESSION --> MOUNT HOME REMOTO
+	
+CONTROL:
+
+	OPTIONAL --> 
+	SUFFICIENT --> 
+	REQUIRED --> Si un requisito falla, al final será un fallo, pero seguirá el resto de reglas. Mismo tipo de programa.
+	
+	Diferencia. 
+	
+	REQUISITE --> El momento que falla peta.
+	
+	
+	PAM STACK --> SUBSTACK.
+	
+---------------
+
+REPASAR
+
+
+passwd -d unix03 --> expiration information changed
+
+passwd -S unix03
+
+chage -l unix03
+
+
+----------------------------------
+
+auth required pam_unix.so nullok # Aunque este vacio la contraseña
+
+unix03@pam:~$ chfn
+Password: 
+chfn: PAM: Authentication failure
+unix03@pam:~$ chfn
+Changing the user information for unix03
+Enter the new value, or press ENTER for the default
+	Full Name: 
+	Room Number []: 
+
+
+
+pam_succeed_if --> condiciones
+
+pam_unix
+
+pam_rootok
+
+pam_permit
+
+
+root@pam:/opt/docker# cat /etc/pam.d/chfn 
+#
+# The PAM configuration file for the Shadow `chfn' service
+#
+auth sufficient pam_rootok.so
+auth required	pam_unix.so nullok
+auth required	pam_succeed_if.so uid > 1000
+#  # FAIL + REQUIRED = FAIL, PERO SE CONTINUA AVALUANDO
+# Si SE PONE BIEN LA CONTRASENA, SI FUNCIONA BIEN DEVUELVE OK, NO DEJARA CAMBIAR
+account sufficient pam_permit.so
+root@pam:/opt/docker# 
+
+
+Es mayor que el ID 1000 no deja 
+
+unix01@pam:~$ id
+uid=1000(unix01) gid=1000(unix01) groups=1000(unix01)
+unix01@pam:~$ 
+
+
+unix01@pam:~$ chfn
+Password: 
+chfn: PAM: Authentication failure
+unix01@pam:~$ 
+
+
+------
+
+unix03@pam:~$ chfn
+Changing the user information for unix03
+Enter the new value, or press ENTER for the default
+	Full Name: 
+	Room Number [ad]: awd
+	Work Phone [awd]: awd
+	Home Phone [a]: awd
+unix03@pam:~$ id
+uid=1002(unix03) gid=1002(unix03) groups=1002(unix03)
+unix03@pam:~$ 
+
+------------------------------
+
+Si que dejará
+
+#
+# The PAM configuration file for the Shadow `chfn' service
+#
+auth sufficient pam_rootok.so
+auth required	pam_unix.so nullok
+auth required	pam_succeed_if.so uid > 1000
+auth required	pam_succeed_if.so user != "unix02"
+#  # FAIL + REQUIRED = FAIL, PERO SE CONTINUA AVALUANDO
+# Si SE PONE BIEN LA CONTRASENA, SI FUNCIONA BIEN DEVUELVE OK, NO DEJARA CAMBIAR
+account sufficient pam_permit.so
+
+------------------------------------
+
+EXERCICI 19
+
+Exemple 19 Generar un fitxer password complert
+
+[REHACER] NO FUNCIONA
+
+----------------------------
+
+cp passwd passwd.bk
+
+<pre>
+# The PAM configuration file for the Shadow `passwd&apos; service
+#
+password sufficient pam_unix.so nullok
+password required pam_deny.so
+</pre>
+
+Para cambiarse el password es suficiente el pam unix.
+
+El último es para cerrar.
+
+El suficient va bien, sigue, si va mal se descarga.
+
+-----------------------------------
+
+pam pwequality.so -- Ponerle una regla, mira que la contraseña sea suficientemente buena con un conjunto de reglas
+
+apt-get update
+
+apt-get install libpam-pwquality --> INSTALAR QUE NO ESTÁ --> SE DEBE CUMPLIR
+
+pwquality.conf
+
+/etc/security/pwquality.conf
+
+Posan reglas y estas suman puntos, para que el password nuevo sea aceptado, debe tener 6 puntos.
+
+
+
+
+
+
+auth required pam_unix.so
+auth required pam_unix.so try_first_pass
+account sufficient pam_permit.so
+
+
+[INVESTIGAR]
+
+---------------------------------------------------------------
+
+[DEBERES , HACER EJEMPLOS Y ESTUDIAR PAM]
+
+apt-get install libpam
+
+mlocate
+
+
+-------------------
+
+
+**Aqui me muestra todos los modulos de PAM**
+
+root@pam:/etc/pam.d# ls /lib/x86_64-linux-gnu/security/pam_
+pam_access.so      pam_ftp.so         pam_mkhomedir.so   pam_selinux.so     pam_unix.so
+pam_cap.so         pam_group.so       pam_motd.so        pam_sepermit.so    pam_userdb.so
+pam_debug.so       pam_issue.so       pam_namespace.so   pam_setquota.so    pam_usertype.so
+pam_deny.so        pam_keyinit.so     pam_nologin.so     pam_shells.so      pam_warn.so
+pam_echo.so        pam_lastlog.so     pam_permit.so      pam_stress.so      pam_wheel.so
+pam_env.so         pam_limits.so      pam_pwhistory.so   pam_succeed_if.so  pam_xauth.so
+pam_exec.so        pam_listfile.so    pam_pwquality.so   pam_time.so        
+pam_faildelay.so   pam_localuser.so   pam_rhosts.so      pam_timestamp.so   
+pam_faillock.so    pam_loginuid.so    pam_rootok.so      pam_tty_audit.so   
+pam_filter.so      pam_mail.so        pam_securetty.so   pam_umask.so       
+root@pam:/etc/pam.d# ls /lib/x86_64-linux-gnu/security/pam_
+
+
+
+
+PS1="KESHI$: "
